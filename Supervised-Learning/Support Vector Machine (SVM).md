@@ -6,7 +6,7 @@ Therefore, we can define a Support Vector Machine as:
 
 > **A Support Vector Machine (SVM) is a supervised machine learning algorithm that classifies data by finding an optimal decision boundary (hyperplane) that maximizes the margin between different classes in an N-dimensional feature space.**
 
-The data points closest to the optimal hyperplane are called **support vectors**. These points play a critical role in determining the position and orientation of the decision boundary. ![Optimal Hyperplane, Margin and Support Vectors](images/svm.png)
+The data points closest to the optimal hyperplane are called **support vectors**. These points play a critical role in determining the position and orientation of the decision boundary. ![Optimal Hyperplane, Margin and Support Vectors](image/svm.png)
 
 **Fig. 1.** Illustration of the optimal hyperplane, margin, and support vectors in SVM.
 
