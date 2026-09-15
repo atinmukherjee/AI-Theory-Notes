@@ -15,8 +15,5 @@ The data points closest to the optimal hyperplane are called **support vectors**
 
 **Fig. 1.** Illustration of the optimal hyperplane, margin, and support vectors in SVM.
 
-<div style="background-color:#E8F4FD; border-left:5px solid #2196F3; padding:12px; margin:15px 0;">
-
-<strong>💡 Note:</strong> SVM is sensitive to feature scales because it determines the decision boundary by maximizing the geometric margin. If one feature has a much larger numerical range than another, it can disproportionately influence the distance calculations and consequently affect the orientation of the optimal hyperplane. Therefore, feature scaling, such as <strong>StandardScaler</strong>, is generally recommended before training an SVM.
-
-</div>
+> [!TIP]
+> 💡 **SVM is sensitive to feature scales** because it determines the decision boundary by maximizing the geometric margin. If one feature has a much larger numerical range than another, it can disproportionately influence the distance calculations and consequently affect the orientation of the optimal hyperplane. Therefore, feature scaling, such as **StandardScaler**, is generally recommended before training an SVM.
