@@ -9,7 +9,8 @@ Therefore, we can define a Support Vector Machine as:
 The data points closest to the optimal hyperplane are called **support vectors**. These points play a critical role in determining the position and orientation of the decision boundary. <p align="center">
   <img src="image/svm.png"
        alt="Optimal Hyperplane, Margin and Support Vectors"
-       width="600">
+       width="350"
+       height = "350">
 </p>
 
 **Fig. 1.** Illustration of the optimal hyperplane, margin, and support vectors in SVM.
