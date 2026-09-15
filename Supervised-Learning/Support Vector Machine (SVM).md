@@ -63,9 +63,9 @@ For example, if one feature ranges from \(0\)–\(1\) while another ranges from 
 
 A common choice is **StandardScaler**:
 
-$
-x'=\frac{x-\mu}{\sigma}
-$
+$$
+x' = \frac{x-\mu}{\sigma}
+$$
 
 ```python
 from sklearn.preprocessing import StandardScaler
@@ -84,7 +84,9 @@ X_test_scaled = scaler.transform(X_test)
 
 The **Radial Basis Function (RBF)** kernel is often a strong starting point when the relationship between features and classes is nonlinear.
 
-$K(x_i,x_j)=\exp(-\gamma\|x_i-x_j\|^2)$
+$$
+K(x_i,x_j)=\exp(-\gamma\|x_i-x_j\|^2)
+$$
 
 In scikit-learn:
 
