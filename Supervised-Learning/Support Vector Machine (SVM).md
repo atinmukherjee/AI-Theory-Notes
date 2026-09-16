@@ -47,8 +47,294 @@ The data points closest to the optimal hyperplane are called **support vectors**
 ## 5. Kernel Trick and Non-linear SVM
 ## 6. Mathematical Formulation
 ## 7. Geometric Interpretation
-## 8. SVM Parameters (C, gamma, kernel)
-## 9. Practical Implementation (sklearn)
+## 8. SVM Parameters (`C`, `γ`, Kernel)
+
+The performance of an SVM depends strongly on the choice of its **hyperparameters**. The three important parameters are:
+
+* **`C`** — controls the penalty for margin violations.
+* **`γ` (gamma)** — controls the influence of individual training samples in the **RBF kernel**.
+* **`kernel`** — determines the mathematical function used to construct the decision boundary.
+
+---
+
+### 8.1 Parameter `C`
+
+The parameter **`C`** controls how strongly the SVM penalizes training samples that violate the margin.
+
+In soft-margin SVM, the optimization problem is:
+
+$$
+\min_{w,b,\xi}
+\frac{1}{2}\|w\|^2 + C\sum_{i=1}^{n}\xi_i
+$$
+
+where:
+
+* $\frac{1}{2}|w|^2$ controls the **margin size**
+* $\xi_i$ represents the **margin violation**
+* $C$ controls the penalty associated with these violations
+
+### Small `C`
+
+A small value of `C` means that margin violations are penalized less.
+
+Therefore, the model can tolerate more training errors in order to obtain a **wider margin**.
+
+> **Small `C` → Wider margin → More violations allowed → Simpler decision boundary**
+
+### Large `C`
+
+A large value of `C` means that margin violations are penalized heavily.
+
+The model therefore tries harder to classify training samples correctly, which can result in a **narrower margin** and a more complex boundary.
+
+> **Large `C` → Narrower margin → Fewer violations allowed → Stronger fit to training data**
+
+### Intuition
+
+Think of `C` as the **strictness of the SVM**:
+
+$$
+\boxed{
+\text{Small }C \rightarrow \text{More tolerance}
+}
+$$
+
+$$
+\boxed{
+\text{Large }C \rightarrow \text{Less tolerance}
+}
+$$
+
+---
+
+## 8.2 Parameter `γ` (Gamma)
+
+The parameter **`γ`** is mainly important for the **RBF kernel**.
+
+The RBF kernel is defined as:
+
+$$
+K(x_i,x_j)
+=
+\exp\left(-\gamma\|x_i-x_j\|^2\right)
+$$
+
+Gamma determines how quickly the influence of a training sample decreases as the distance from that sample increases.
+
+### Small `γ`
+
+A small value of gamma gives each training sample a **larger region of influence**.
+
+This generally produces a smoother and less complex decision boundary.
+
+> **Small `γ` → Wider influence → Smoother boundary → Lower complexity**
+
+### Large `γ`
+
+A large value of gamma gives each training sample a **smaller region of influence**.
+
+The model can therefore create a more flexible and complex decision boundary.
+
+> **Large `γ` → Narrow influence → More complex boundary → Higher risk of overfitting**
+
+### Intuition
+
+Gamma controls the **reach of each training sample**:
+
+$$
+\boxed{
+\text{Small }\gamma \rightarrow \text{Broad influence}
+}
+$$
+
+$$
+\boxed{
+\text{Large }\gamma \rightarrow \text{Localized influence}
+}
+$$
+
+> [!NOTE]
+> **`C` and `γ` control different aspects of the model.**
+> `C` controls how strongly the model penalizes margin violations, whereas `γ` controls the locality and flexibility of the RBF decision boundary.
+
+---
+
+## 8.3 Kernel
+
+The **kernel** determines how SVM represents relationships between data points.
+
+A kernel allows SVM to construct nonlinear decision boundaries without explicitly transforming the original features into a higher-dimensional space.
+
+This idea is known as the **Kernel Trick**.
+
+### Common SVM Kernels
+
+| Kernel    | Main Idea                   | Typical Use                                |
+| --------- | --------------------------- | ------------------------------------------ |
+| `linear`  | Linear decision boundary    | Linearly separable / high-dimensional data |
+| `poly`    | Polynomial relationship     | Polynomial nonlinear patterns              |
+| `rbf`     | Flexible nonlinear boundary | General nonlinear problems                 |
+| `sigmoid` | Sigmoid-shaped similarity   | Less commonly used                         |
+
+### Linear Kernel
+
+The linear kernel is:
+
+$$
+K(x_i,x_j)=x_i^Tx_j
+$$
+
+It produces a linear decision boundary:
+
+$$
+w^Tx+b=0
+$$
+
+---
+
+### Polynomial Kernel
+
+The polynomial kernel can be written as:
+
+$$
+K(x_i,x_j)
+=
+(\gamma x_i^Tx_j+r)^d
+$$
+
+where:
+
+* $\gamma$ controls the influence of the input
+* $r$ is a coefficient
+* $d$ is the polynomial degree
+
+It can model polynomial nonlinear relationships.
+
+---
+
+### RBF Kernel
+
+The Radial Basis Function (RBF) kernel is:
+
+$$
+K(x_i,x_j)
+=
+\exp\left(-\gamma\|x_i-x_j\|^2\right)
+$$
+
+The RBF kernel is widely used because it can model complex nonlinear relationships.
+
+Its flexibility is controlled mainly by **`γ`**.
+
+---
+
+## 8.4 Relationship Between `C` and `γ`
+
+For an RBF-SVM, `C` and `γ` influence the model in different ways.
+
+| Parameter | Small Value                   | Large Value                       |
+| --------- | ----------------------------- | --------------------------------- |
+| **`C`**   | Wider margin, more violations | Narrower margin, fewer violations |
+| **`γ`**   | Smoother boundary             | More complex boundary             |
+
+A useful conceptual view is:
+
+$$
+\boxed{
+C \rightarrow \text{Penalty for errors / margin violations}
+}
+$$
+
+$$
+\boxed{
+\gamma \rightarrow \text{Locality / complexity of the RBF boundary}
+}
+$$
+
+Therefore, both parameters usually need to be considered together when tuning an RBF-SVM.
+
+---
+
+## 8.5 Hyperparameter Tuning
+
+The optimal values of `C` and `γ` depend on the dataset.
+
+Rather than selecting them manually, they can be searched using **cross-validation**.
+
+For example:
+
+```python
+param_grid = {
+    "C": [0.1, 1, 10, 100],
+    "gamma": [0.001, 0.01, 0.1, 1]
+}
+```
+
+With scikit-learn:
+
+```python
+from sklearn.model_selection import GridSearchCV
+from sklearn.svm import SVC
+
+grid = GridSearchCV(
+    SVC(kernel="rbf"),
+    param_grid,
+    cv=5,
+    scoring="accuracy"
+)
+
+grid.fit(X_train, y_train)
+
+print("Best parameters:", grid.best_params_)
+```
+
+The important principle is:
+
+$$
+\boxed{
+\text{Choose parameters using training data + Cross-Validation}
+}
+$$
+
+The **test set should remain untouched** until the final evaluation.
+
+---
+
+## 8.6 Quick Summary
+
+| Parameter    | Controls                      | Key Effect                                 |
+| ------------ | ----------------------------- | ------------------------------------------ |
+| **`C`**      | Penalty for margin violations | Controls margin–error trade-off            |
+| **`γ`**      | Sample influence in RBF       | Controls boundary locality/complexity      |
+| **`kernel`** | Feature similarity function   | Determines linear/nonlinear representation |
+
+### Core Idea
+
+$$
+\boxed{
+\text{Kernel}
+\rightarrow
+\text{Type of Decision Boundary}
+}
+$$
+
+$$
+\boxed{
+C
+\rightarrow
+\text{Penalty for Margin Violations}
+}
+$$
+
+$$
+\boxed{
+\gamma
+\rightarrow
+\text{Locality of the RBF Boundary}
+}
+$$
+
 ## 9. Practical Implementation (scikit-learn)
 
 The theoretical concepts of SVM can be implemented using **scikit-learn**. A practical SVM workflow should include **data splitting, feature scaling, kernel selection, hyperparameter tuning, cross-validation, and final evaluation**.
@@ -572,7 +858,414 @@ Evaluate on Unseen Test Data
 
 This workflow provides a more reliable estimate of how the trained SVM will perform on unseen data.
 
-## 10. Examples (Iris, Digits)
+## 10.Example: Breast Cancer Classification
+
+In the previous section, we implemented SVM using the **Iris dataset**. Here, we use a different dataset to demonstrate how SVM can be applied to a more realistic **binary classification problem with multiple numerical features**.
+
+We use the **Breast Cancer Wisconsin Diagnostic dataset**, which is available directly through `scikit-learn`.
+
+The task is to classify samples into two classes:
+
+* **Malignant**
+* **Benign**
+
+The dataset contains **569 samples and 30 numerical features**.
+
+---
+
+### 10.1 Import Required Libraries
+
+```python
+import numpy as np
+
+from sklearn.datasets import load_breast_cancer
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+from sklearn.svm import SVC
+
+from sklearn.metrics import (
+    accuracy_score,
+    classification_report,
+    confusion_matrix
+)
+```
+
+---
+
+### 10.2 Load the Dataset
+
+```python
+data = load_breast_cancer()
+
+X = data.data
+y = data.target
+
+print("Feature shape:", X.shape)
+print("Target shape:", y.shape)
+print("Classes:", data.target_names)
+```
+
+Expected output:
+
+```text
+Feature shape: (569, 30)
+Target shape: (569,)
+Classes: ['malignant' 'benign']
+```
+
+Therefore:
+
+$$
+X \in \mathbb{R}^{569\times30}
+$$
+
+There are:
+
+$$
+n=569 \quad \text{samples}
+$$
+
+and
+
+$$
+p=30 \quad \text{features}
+$$
+
+---
+
+### 10.3 Train-Test Split
+
+```python
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.2,
+    random_state=42,
+    stratify=y
+)
+
+print("Training samples:", X_train.shape[0])
+print("Testing samples:", X_test.shape[0])
+```
+
+The test set is kept separate and is not used during hyperparameter tuning.
+
+---
+
+### 10.4 Build the SVM Pipeline
+
+Because SVM is sensitive to feature scale, we first standardize the features.
+
+```python
+pipeline = Pipeline([
+    ("scaler", StandardScaler()),
+    ("svm", SVC())
+])
+```
+
+The pipeline performs:
+
+$$
+\text{Raw Features}
+\rightarrow
+\text{Standardization}
+\rightarrow
+\text{SVM}
+$$
+
+---
+
+### 10.5 Define Hyperparameters
+
+For this example, we will compare **linear** and **RBF** kernels.
+
+```python
+param_grid = {
+    "svm__kernel": ["linear", "rbf"],
+    "svm__C": [0.1, 1, 10, 100],
+    "svm__gamma": ["scale", 0.01, 0.1, 1]
+}
+```
+
+Here:
+
+* `kernel` → determines the type of decision boundary
+* \(C\) → controls the penalty for margin violations
+* \(\gamma\) → controls the influence of individual samples for nonlinear kernels
+
+---
+
+### 10.6 Hyperparameter Tuning
+
+Use `GridSearchCV` with 5-fold cross-validation.
+
+```python
+grid_search = GridSearchCV(
+    pipeline,
+    param_grid,
+    cv=5,
+    scoring="accuracy",
+    n_jobs=-1
+)
+
+grid_search.fit(X_train, y_train)
+```
+
+The training data is divided into five folds:
+
+```text
+Fold 1 → Validation
+Fold 2 → Training
+Fold 3 → Training
+Fold 4 → Training
+Fold 5 → Training
+```
+
+The process is repeated so that every fold is used for validation.
+
+The average validation performance is used to compare different hyperparameter combinations.
+
+---
+
+### 10.7 Best Hyperparameters
+
+```python
+print("Best Parameters:")
+print(grid_search.best_params_)
+
+print("\nBest Cross-Validation Accuracy:")
+print(grid_search.best_score_)
+```
+
+The exact best parameters depend on the search space and dataset split.
+
+---
+
+### 10.8 Evaluate on the Test Set
+
+After selecting the best model using the training data, evaluate it on the previously unseen test set.
+
+```python
+best_model = grid_search.best_estimator_
+
+y_pred = best_model.predict(X_test)
+```
+
+#### Accuracy
+
+```python
+accuracy = accuracy_score(y_test, y_pred)
+
+print("Test Accuracy:", accuracy)
+```
+
+#### Classification Report
+
+```python
+print(
+    classification_report(
+        y_test,
+        y_pred,
+        target_names=data.target_names
+    )
+)
+```
+
+The classification report provides:
+
+* Precision
+* Recall
+* F1-score
+* Support
+
+#### Confusion Matrix
+
+```python
+cm = confusion_matrix(y_test, y_pred)
+
+print("Confusion Matrix:")
+print(cm)
+```
+
+---
+
+### 10.9 Inspect Support Vectors
+
+The support vectors can be inspected from the trained `SVC` model.
+
+```python
+svm_model = best_model.named_steps["svm"]
+
+print("Number of support vectors:")
+print(svm_model.n_support_)
+
+print("\nTotal support vectors:")
+print(len(svm_model.support_))
+```
+
+The support vectors are the training samples that play an important role in defining the SVM decision boundary.
+
+---
+
+## 10.10 Complete Example
+
+The complete implementation can be written as:
+
+```python
+import numpy as np
+
+from sklearn.datasets import load_breast_cancer
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+from sklearn.svm import SVC
+
+from sklearn.metrics import (
+    accuracy_score,
+    classification_report,
+    confusion_matrix
+)
+
+# --------------------------------------------------
+# 1. Load Dataset
+# --------------------------------------------------
+
+data = load_breast_cancer()
+
+X = data.data
+y = data.target
+
+print("Dataset Shape:", X.shape)
+print("Classes:", data.target_names)
+
+# --------------------------------------------------
+# 2. Train / Test Split
+# --------------------------------------------------
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.2,
+    random_state=42,
+    stratify=y
+)
+
+# --------------------------------------------------
+# 3. Build Pipeline
+# --------------------------------------------------
+
+pipeline = Pipeline([
+    ("scaler", StandardScaler()),
+    ("svm", SVC())
+])
+
+# --------------------------------------------------
+# 4. Hyperparameter Search Space
+# --------------------------------------------------
+
+param_grid = {
+    "svm__kernel": ["linear", "rbf"],
+    "svm__C": [0.1, 1, 10, 100],
+    "svm__gamma": ["scale", 0.01, 0.1, 1]
+}
+
+# --------------------------------------------------
+# 5. Hyperparameter Tuning
+# --------------------------------------------------
+
+grid_search = GridSearchCV(
+    pipeline,
+    param_grid,
+    cv=5,
+    scoring="accuracy",
+    n_jobs=-1
+)
+
+grid_search.fit(X_train, y_train)
+
+# --------------------------------------------------
+# 6. Best Model
+# --------------------------------------------------
+
+print("\nBest Parameters:")
+print(grid_search.best_params_)
+
+print("\nBest CV Accuracy:")
+print(grid_search.best_score_)
+
+best_model = grid_search.best_estimator_
+
+# --------------------------------------------------
+# 7. Test Prediction
+# --------------------------------------------------
+
+y_pred = best_model.predict(X_test)
+
+# --------------------------------------------------
+# 8. Evaluation
+# --------------------------------------------------
+
+print("\nTest Accuracy:")
+print(accuracy_score(y_test, y_pred))
+
+print("\nClassification Report:")
+print(
+    classification_report(
+        y_test,
+        y_pred,
+        target_names=data.target_names
+    )
+)
+
+print("\nConfusion Matrix:")
+print(confusion_matrix(y_test, y_pred))
+
+# --------------------------------------------------
+# 9. Support Vectors
+# --------------------------------------------------
+
+svm_model = best_model.named_steps["svm"]
+
+print("\nNumber of Support Vectors:")
+print(svm_model.n_support_)
+
+print("\nTotal Support Vectors:")
+print(len(svm_model.support_))
+```
+
+---
+
+### 10.11 What This Example Demonstrates
+
+This example connects the **theory of SVM** with a complete machine-learning workflow:
+
+$$
+\boxed{
+\begin{aligned}
+&\text{Real Dataset}\\
+&\downarrow\\
+&\text{Train/Test Split}\\
+&\downarrow\\
+&\text{Feature Scaling}\\
+&\downarrow\\
+&\text{Linear/RBF Kernel}\\
+&\downarrow\\
+&\text{Hyperparameter Tuning}\\
+&\downarrow\\
+&\text{5-Fold Cross-Validation}\\
+&\downarrow\\
+&\text{Best SVM}\\
+&\downarrow\\
+&\text{Unseen Test Set}\\
+&\downarrow\\
+&\text{Performance Evaluation}
+\end{aligned}
+}
+$$
+
+> **Key Insight:** This example demonstrates an important advantage of SVM: it can operate effectively in a feature space with many dimensions, while the kernel mechanism allows nonlinear decision boundaries when required.
+
 ## 11. Practical Tips
 
 SVM can be a powerful classifier, but its performance depends strongly on **feature scaling, kernel selection, and hyperparameter tuning**.
