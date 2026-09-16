@@ -49,9 +49,531 @@ The data points closest to the optimal hyperplane are called **support vectors**
 ## 7. Geometric Interpretation
 ## 8. SVM Parameters (C, gamma, kernel)
 ## 9. Practical Implementation (sklearn)
+## 9. Practical Implementation (scikit-learn)
+
+The theoretical concepts of SVM can be implemented using **scikit-learn**. A practical SVM workflow should include **data splitting, feature scaling, kernel selection, hyperparameter tuning, cross-validation, and final evaluation**.
+
+### 9.1 SVM Workflow
+
+A complete SVM workflow is:
+
+```text
+Dataset
+   ↓
+Train / Test Split
+   ↓
+Pipeline
+   ├── Feature Scaling
+   └── SVM
+   ↓
+Hyperparameter Tuning
+   ├── Kernel
+   ├── C
+   └── γ
+   ↓
+Cross-Validation
+   ↓
+Best Model
+   ↓
+Final Evaluation on Test Set
+```
+
+The important principle is:
+
+$$
+\boxed{
+\text{Training Data}
+\rightarrow
+\text{Cross-Validation + Hyperparameter Tuning}
+\rightarrow
+\text{Best Model}
+\rightarrow
+\text{Unseen Test Data}
+}
+$$
+
+The test set should remain untouched until the final evaluation.
+
+---
+
+### 9.2 Import Required Libraries
+
+```python
+import numpy as np
+import pandas as pd
+
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+from sklearn.svm import SVC
+from sklearn.metrics import (
+    accuracy_score,
+    classification_report,
+    confusion_matrix
+)
+```
+
+---
+
+### 9.3 Load the Dataset
+
+For demonstration, we use the **Iris dataset**.
+
+```python
+iris = load_iris()
+
+X = iris.data
+y = iris.target
+
+print("Feature shape:", X.shape)
+print("Classes:", np.unique(y))
+```
+
+The Iris dataset contains:
+
+* 150 samples
+* 4 numerical features
+* 3 classes
+
+---
+
+### 9.4 Split the Dataset
+
+First, divide the dataset into training and testing sets.
+
+```python
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.2,
+    random_state=42,
+    stratify=y
+)
+```
+
+Here:
+
+* `test_size=0.2` → 20% of the data is reserved for testing
+* `random_state=42` → makes the split reproducible
+* `stratify=y` → maintains the class distribution
+
+---
+
+### 9.5 Build an SVM Pipeline
+
+Feature scaling is important because SVM is sensitive to feature magnitude.
+
+Instead of scaling the data separately, combine preprocessing and SVM into a **Pipeline**.
+
+```python
+pipeline = Pipeline([
+    ("scaler", StandardScaler()),
+    ("svm", SVC())
+])
+```
+
+The pipeline performs:
+
+$$
+\text{Input Data}
+\rightarrow
+\text{StandardScaler}
+\rightarrow
+\text{SVM}
+$$
+
+This also helps prevent **data leakage during cross-validation**.
+
+---
+
+### 9.6 Define the Hyperparameter Search Space
+
+The most important SVM hyperparameters include:
+
+* **Kernel**
+* **\(C\)**
+* **\(\gamma\)** for nonlinear kernels such as RBF
+
+```python
+param_grid = {
+    "svm__kernel": ["linear", "rbf"],
+    "svm__C": [0.1, 1, 10, 100],
+    "svm__gamma": ["scale", 0.01, 0.1, 1]
+}
+```
+
+#### Meaning of \(C\)
+
+\(C\) controls the penalty for margin violations.
+
+* Small \(C\) → wider margin, more violations allowed
+* Large \(C\) → stronger penalty for violations
+
+#### Meaning of \(\gamma\)
+
+For the RBF kernel:
+
+$$
+K(x_i,x_j)
+=
+\exp(-\gamma\|x_i-x_j\|^2)
+$$
+
+* Small \(\gamma\) → smoother decision boundary
+* Large \(\gamma\) → more localized influence and potentially more complex boundary
+
+---
+
+### 9.7 Hyperparameter Tuning with GridSearchCV
+
+Use `GridSearchCV` to find a suitable combination of hyperparameters.
+
+```python
+grid_search = GridSearchCV(
+    estimator=pipeline,
+    param_grid=param_grid,
+    cv=5,
+    scoring="accuracy",
+    n_jobs=-1
+)
+
+grid_search.fit(X_train, y_train)
+```
+
+Here:
+
+* `cv=5` → 5-fold cross-validation
+* `scoring="accuracy"` → accuracy is used to compare models
+* `n_jobs=-1` → uses all available CPU cores
+
+Conceptually:
+
+```text
+Training Data
+      ↓
+   Split into
+    5 folds
+      ↓
+Train on 4 folds
+Validate on 1 fold
+      ↓
+Repeat 5 times
+      ↓
+Compare Hyperparameters
+      ↓
+Select Best Parameters
+```
+
+---
+
+### 9.8 Obtain the Best Hyperparameters
+
+```python
+print("Best Parameters:")
+print(grid_search.best_params_)
+
+print("\nBest Cross-Validation Score:")
+print(grid_search.best_score_)
+```
+
+For example, the output might look like:
+
+```text
+Best Parameters:
+{
+    'svm__C': 10,
+    'svm__gamma': 'scale',
+    'svm__kernel': 'rbf'
+}
+```
+
+The exact values may vary depending on the dataset and search space.
+
+---
+
+### 9.9 Obtain the Best Model
+
+`GridSearchCV` automatically identifies the best-performing configuration and refits the model on the complete training dataset.
+
+```python
+best_model = grid_search.best_estimator_
+```
+
+The selected model can now be used for prediction.
+
+---
+
+### 9.10 Evaluate on the Test Set
+
+The test set has not been used during hyperparameter selection.
+
+Therefore, it can now be used for the final evaluation.
+
+```python
+y_pred = best_model.predict(X_test)
+```
+
+#### Accuracy
+
+```python
+accuracy = accuracy_score(y_test, y_pred)
+
+print("Test Accuracy:", accuracy)
+```
+
+#### Classification Report
+
+```python
+print(
+    classification_report(
+        y_test,
+        y_pred,
+        target_names=iris.target_names
+    )
+)
+```
+
+The classification report provides:
+
+* Precision
+* Recall
+* F1-score
+* Support
+
+#### Confusion Matrix
+
+```python
+cm = confusion_matrix(y_test, y_pred)
+
+print("Confusion Matrix:")
+print(cm)
+```
+
+---
+
+### 9.11 Inspect Support Vectors
+
+One of the important characteristics of SVM is the concept of **support vectors**.
+
+For an `SVC` model, they can be accessed using:
+
+```python
+svm_model = best_model.named_steps["svm"]
+
+print("Number of support vectors:")
+print(svm_model.n_support_)
+
+print("\nTotal support vectors:")
+print(len(svm_model.support_))
+```
+
+The support-vector samples can be accessed using:
+
+```python
+support_vectors = svm_model.support_vectors_
+
+print(support_vectors)
+```
+
+These samples play a central role in determining the SVM decision boundary.
+
+---
+
+## 9.12 Complete Implementation
+
+The complete workflow can be written compactly as follows:
+
+```python
+import numpy as np
+
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+from sklearn.svm import SVC
+from sklearn.metrics import (
+    accuracy_score,
+    classification_report,
+    confusion_matrix
+)
+
+# --------------------------------------------------
+# 1. Load Dataset
+# --------------------------------------------------
+
+iris = load_iris()
+
+X = iris.data
+y = iris.target
+
+# --------------------------------------------------
+# 2. Train / Test Split
+# --------------------------------------------------
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.2,
+    random_state=42,
+    stratify=y
+)
+
+# --------------------------------------------------
+# 3. Build Pipeline
+# --------------------------------------------------
+
+pipeline = Pipeline([
+    ("scaler", StandardScaler()),
+    ("svm", SVC())
+])
+
+# --------------------------------------------------
+# 4. Define Hyperparameter Search Space
+# --------------------------------------------------
+
+param_grid = {
+    "svm__kernel": ["linear", "rbf"],
+    "svm__C": [0.1, 1, 10, 100],
+    "svm__gamma": ["scale", 0.01, 0.1, 1]
+}
+
+# --------------------------------------------------
+# 5. Hyperparameter Tuning + Cross-Validation
+# --------------------------------------------------
+
+grid_search = GridSearchCV(
+    pipeline,
+    param_grid,
+    cv=5,
+    scoring="accuracy",
+    n_jobs=-1
+)
+
+grid_search.fit(X_train, y_train)
+
+# --------------------------------------------------
+# 6. Best Parameters
+# --------------------------------------------------
+
+print("Best Parameters:")
+print(grid_search.best_params_)
+
+print("\nBest CV Accuracy:")
+print(grid_search.best_score_)
+
+# --------------------------------------------------
+# 7. Best Model
+# --------------------------------------------------
+
+best_model = grid_search.best_estimator_
+
+# --------------------------------------------------
+# 8. Test Set Prediction
+# --------------------------------------------------
+
+y_pred = best_model.predict(X_test)
+
+# --------------------------------------------------
+# 9. Final Evaluation
+# --------------------------------------------------
+
+print("\nTest Accuracy:")
+print(accuracy_score(y_test, y_pred))
+
+print("\nClassification Report:")
+print(
+    classification_report(
+        y_test,
+        y_pred,
+        target_names=iris.target_names
+    )
+)
+
+print("\nConfusion Matrix:")
+print(confusion_matrix(y_test, y_pred))
+
+# --------------------------------------------------
+# 10. Support Vectors
+# --------------------------------------------------
+
+svm_model = best_model.named_steps["svm"]
+
+print("\nNumber of Support Vectors:")
+print(svm_model.n_support_)
+
+print("\nTotal Support Vectors:")
+print(len(svm_model.support_))
+```
+
+---
+
+## 9.13 Practical Workflow Summary
+
+The complete SVM implementation can be summarized as:
+
+$$
+\boxed{
+\text{Dataset}
+\rightarrow
+\text{Train/Test Split}
+\rightarrow
+\text{Scaling}
+\rightarrow
+\text{SVM Pipeline}
+\rightarrow
+\text{Hyperparameter Tuning}
+\rightarrow
+\text{Cross-Validation}
+\rightarrow
+\text{Best Model}
+\rightarrow
+\text{Test Evaluation}
+}
+$$
+
+### Key Parameters
+
+| Parameter      | Purpose                                                     |
+| -------------- | ----------------------------------------------------------- |
+| `kernel`       | Determines the type of decision boundary                    |
+| `C`            | Controls the penalty for margin violations                  |
+| `gamma`        | Controls the influence of samples in RBF/polynomial kernels |
+| `cv`           | Number of cross-validation folds                            |
+| `class_weight` | Helps handle class imbalance                                |
+
+> **Important:** Hyperparameter tuning should be performed using the **training data and cross-validation**. The test set should be used only once the final model has been selected.
+
+### Key Takeaway
+
+A good SVM implementation is not simply:
+
+```text
+Train → Predict
+```
+
+It is:
+
+```text
+Split
+  ↓
+Scale
+  ↓
+Choose Kernel
+  ↓
+Tune Hyperparameters
+  ↓
+Cross-Validate
+  ↓
+Select Best Model
+  ↓
+Evaluate on Unseen Test Data
+```
+
+This workflow provides a more reliable estimate of how the trained SVM will perform on unseen data.
+
 ## 10. Examples (Iris, Digits)
-## 11. Tips and Best Practices
-## 10. Practical Tips
+## 11. Practical Tips
 
 SVM can be a powerful classifier, but its performance depends strongly on **feature scaling, kernel selection, and hyperparameter tuning**.
 
