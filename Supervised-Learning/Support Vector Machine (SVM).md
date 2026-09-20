@@ -47,7 +47,7 @@ The data points closest to the optimal hyperplane are called **support vectors**
 > 💡 **SVM is sensitive to feature scales** because it determines the decision boundary by maximizing the geometric margin. If one feature has a much larger numerical range than another, it can disproportionately influence the distance calculations and consequently affect the orientation of the optimal hyperplane. Therefore, feature scaling, such as **StandardScaler**, is generally recommended before training an SVM.
 ## 5. Kernel Trick and Non-linear SVM
 ## 6. Mathematical Formulation
-If data is in two dimension then hyperplane is one dimension.
+If data is in two dimension then hyperplane is one dimension. if you have n number of dimension then hyperpnae is the n-1 dimension.
 ## 7. Geometric Interpretation
 ## 8. SVM Parameters (`C`, `γ`, Kernel)
 
