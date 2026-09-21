@@ -35,7 +35,7 @@ $$
 
 Note that eq.**(1)** is simply the equation of a line, since indeed in two dimensions a hyperplane is a line. For p-dimension space we can extent the equation **(1)** :
 $$
-\beta_0 + \beta_1 X_1 + \beta_2 X_2 + ... + \beta_p X_p = 0
+\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_p X_p = 0
 $$
 
 $$
