@@ -17,13 +17,10 @@ In simple terms, among all possible separating hyperplanes, it chooses the one t
 In p-dimension space , a *hyperplane* is a flat affine subspace of dimension $(p-1)$. Here *affine* indicates that the subspace need not pass through the originFor 2D space  a hyperplane is a flat one-dimensional subspace means a *line* and for 3D space hyperplane is a flat two-dimensional subspace means *plane*. 
 
 The mathematical definition of a hyperplane is quite simple. In two dimension, a hyperplane is defined by the equation
-$$
-\beta_0 + \beta_1 X_1 + \beta_2 X_2 = 0
-$$
 
+$$\beta_0 + \beta_1 X_1 + \beta_2 X_2 = 0$$
 
 where:
-
 $\beta_0$ is the intercept.
 $\beta_1$ and $\beta_2$ are the coefficients (weights) associated with the features $X_1$ and $X_2$.
 $X_1$ and $X_2$ are the two feature values of a data point.
@@ -34,9 +31,8 @@ X=(X_1,X_2)^T
 $$
 
 Note that eq.**(1)** is simply the equation of a line, since indeed in two dimensions a hyperplane is a line. For p-dimension space we can extent the equation **(1)** :
-$$
-\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_p X_p = 0
-$$
+
+$$\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_p X_p = 0$$
 
 $$
 \beta_0 + \sum_{j=0}^p \beta_j X_j = 0
