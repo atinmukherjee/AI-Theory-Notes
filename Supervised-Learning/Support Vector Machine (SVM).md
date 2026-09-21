@@ -3,22 +3,74 @@ In this content we will discuss about the support Vector Machine (SVM), an appro
 
 >[!Note]
 >Then Support vector Machine is a generalization of a simple and intutive classifier called *Maximal margin classifier*. It is elegent and simple but it cannot be applied to most of the dataset, since it requires classes be seperable by a linear boundary. <ins>Therefore, the *Support Vector Classifier* is introduced as a extension of *Maximal margin classsifier*. Support Vector Machine (SVM), which is further extension of the support vector classifier in order to accommodate non-linear class boundaries.</ins>
+ Since the Support Vector Machine (SVM) can be viewed as a generalization of the Maximal Margin Classifier, it is useful to first understand the fundamental concepts of the Maximal Margin Classifier before delving into SVMs.
 
 ## Maximal Margin Classifier
+**A Maximal Margin Classifier (MMC) is a linear classification method that finds a hyperplane separating two classes while maximizing the minimum distance (margin) between the hyperplane and the training observations.** 
 
+In simple terms, among all possible separating hyperplanes, it chooses the one that leaves the largest possible margin between the two classes.
 
-### Core Idea
+>[!IMPORTANT]
+>**The Maximal Margin Classifier works only when the training data are perfectly linearly separable. If the classes overlap or contain noisy observations, a separating hyperplane may not exist. This limitation motivates the development of the Support Vector Classifier (Soft-Margin SVM).**
 
-SVM tries to find the **best possible separating hyperplane** by balancing two objectives:
+### Hyperplane and Geometry
+In p-dimension space , a *hyperplane* is a flat affine subspace of dimension $(p-1)$. Here *affine* indicates that the subspace need not pass through the originFor 2D space  a hyperplane is a flat one-dimensional subspace means a *line* and for 3D space hyperplane is a flat two-dimensional subspace means *plane*. 
+
+The mathematical definition of a hyperplane is quite simple. In two dimension, a hyperplane is defined by the equation
+$$ 
+\beta_0 + \beta_1 X_1 + \beta_2 X_2 = 0
+\tag{1}
+$$
+where:
+
+$\beta_0$ is the intercept.
+$\beta_1$ and $\beta_2$ are the coefficients (weights) associated with the features $X_1$ and $X_2$.
+$X_1$ and $X_2$ are the two feature values of a data point.
+A data point can be represented as:
 
 $$
-\boxed{\text{Maximize the Margin} \quad + \quad \text{Minimize Margin Violations}}
+X=(X_1,X_2)^T
 $$
 
-This makes SVM a powerful approach for classification problems where **separation, generalization, and nonlinear decision boundaries** are important.
-## 2. Hyperplane and Geometry
+Note that eq.**(1)** is simply the equation of a line, since indeed in two dimensions a hyperplane is a line. For p-dimension space we can extent the equation **(1)** :
+$$
+\beta_0 + \beta_1 X_1 + \beta_2 X_2 + ... + \beta_p X_p = 0
+$$
 
-## 3. Maximal Margin Classifier
+$$
+\beta_0 + \sum_{j=0}^p \beta_j X_j = 0
+\tag{2}
+$$
+
+defines a hyperplane in p-dimension feature space.
+
+Suppose that **X** does not satisfy **(2)** . A data point $$X=(X_1,X_2,\ldots,X_p)^T$$ may either lie on the hyperplane or on one of its two sides.
+If
+
+$$
+\beta_0 + \sum_{j=0}^p \beta_j X_j = 0
+$$
+
+then the point (X) lies exactly on the hyperplane.
+
+If
+
+$$
+\beta_0 + \sum_{j=0}^p \beta_j X_j > 0
+
+$$
+
+then (X) lies on one side of the hyperplane.
+
+If
+
+$$
+\beta_0 + \sum_{j=0}^p \beta_j X_j < 0
+$$
+
+Therefore, a hyperplane divides the (p)-dimensional feature space into two regions (half-spaces).
+
+**This property is fundamental to classification methods such as the Maximal Margin Classifier and Support Vector Machine (SVM), where the hyperplane is used to separate observations belonging to different classes.**
 ## 4. Support Vector Classifier (Soft Margin)
 **Support Vector Machine (SVM)** is a powerful and versatile supervised machine learning algorithm primarily used for **linear and non-linear classification**, although it can also be extended to **regression** problems. The fundamental idea behind SVM is to find an optimal **hyperplane** that separates data points belonging to different classes. A **hyperplane** is a mathematical decision boundary that divides a feature space into two regions. In a two-dimensional space, the hyperplane is a **line**; in three dimensions, it is a **plane**; and in higher-dimensional spaces, it is referred to as a **hyperplane**. For a binary classification problem, SVM searches for the hyperplane that not only separates the different classes but also **maximizes the margin**, i.e., the margin is the distance between the closest support vectors of the two classes. A larger margin indicates a greater degree of confidence in the classification. The margin is a measure of how well-separated the classes are in feature space. SVMs are designed to find the hyperplane that maximizes this margin. Therefore, sometime SVM also called as **Maximun Margin Classifier**. 
 
