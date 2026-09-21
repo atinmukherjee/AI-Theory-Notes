@@ -20,7 +20,6 @@ The mathematical definition of a hyperplane is quite simple. In two dimension, a
 $$ 
 \beta_0 + \beta_1 X_1 + \beta_2 X_2 = 0
 $$
-**(1)**
 where:
 
 $\beta_0$ is the intercept.
@@ -39,7 +38,6 @@ $$
 
 $$
 \beta_0 + \sum_{j=0}^p \beta_j X_j = 0
-\tag{2}
 $$
 
 defines a hyperplane in p-dimension feature space.
