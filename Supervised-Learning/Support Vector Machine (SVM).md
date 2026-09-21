@@ -18,9 +18,9 @@ In p-dimension space , a *hyperplane* is a flat affine subspace of dimension $(p
 
 The mathematical definition of a hyperplane is quite simple. In two dimension, a hyperplane is defined by the equation
 $$ 
-\beta_0 + \beta_1 X_1 + \beta_2 X_2 = 0 \\
-\tag{1}
+\beta_0 + \beta_1 X_1 + \beta_2 X_2 = 0
 $$
+**(1)**
 where:
 
 $\beta_0$ is the intercept.
