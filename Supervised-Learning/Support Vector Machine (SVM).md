@@ -1,19 +1,15 @@
 # Support Vector Machine (SVM)
-## 1. Motivation
+In this content we will discuss about the support Vector Machine (SVM), an approch for classification that was developed in 1990s. The SVM is often considered one of the best "out of the box" classifiers. 
 
 Many real-world classification problems require a decision boundary that not only separates different classes but also provides a **large margin of separation** between them.
 
-Earlier methods such as **Logistic Regression** and **Linear Discriminant Analysis (LDA)** can produce effective linear decision boundaries. However, they may not explicitly optimize the **margin between classes**, and linear models cannot directly handle cases where the classes are **not linearly separable**.
+Earlier methods such as **Logistic Regression** and **Linear Discriminant Analysis (LDA)** can produce effective linear decision boundaries. However, they may not explicitly optimize the **margin between classes**, and linear models cannot directly handle cases where the classes are **not linearly separable**. SVM addresses these challenges by finding an **optimal separating hyperplane** that maximizes the margin between classes.
 
-SVM addresses these challenges by finding an **optimal separating hyperplane** that maximizes the margin between classes.
+[!Note]
+Then Support vector Machine is a generalization of a simple and intutive classifier called *Maximal margin classifier*. It is elegent and simple but it cannot be applied to most of the dataset, since it requires classes be seperable by a linear boundary. <ins>Therefore, the *Support Vector Classifier* is introduced as a extension of *Maximal margin classsifier*. Support Vector Machine (SVM), which is further extension of the support vector classifier in order to accommodate non-linear class boundaries.</ins>
 
-### Key Motivations
+## Maximal Margin Classifier
 
-* **Maximum-Margin Separation:** SVM explicitly searches for a decision boundary that maximizes the margin between classes.
-* **Better Generalization:** A larger margin can lead to better generalization on unseen data.
-* **Nonlinear Classification:** Using the **kernel trick**, SVM can create nonlinear decision boundaries.
-* **Handling Outliers:** Soft-margin SVM allows controlled margin violations instead of forcing every training instance to be perfectly separated.
-* **High-Dimensional Data:** SVM can work effectively in high-dimensional feature spaces, particularly when the number of features is large relative to the number of samples.
 
 ### Core Idea
 
