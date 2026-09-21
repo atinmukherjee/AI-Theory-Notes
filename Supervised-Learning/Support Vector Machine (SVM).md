@@ -17,7 +17,9 @@ In simple terms, among all possible separating hyperplanes, it chooses the one t
 In p-dimension space , a *hyperplane* is a flat affine subspace of dimension $(p-1)$. Here *affine* indicates that the subspace need not pass through the originFor 2D space  a hyperplane is a flat one-dimensional subspace means a *line* and for 3D space hyperplane is a flat two-dimensional subspace means *plane*. 
 
 The mathematical definition of a hyperplane is quite simple. In two dimension, a hyperplane is defined by the equation
-$$ \beta_0 + \beta_1 X_1 + \beta_2 X_2 = 0 $$
+$$
+\beta_0 + \beta_1 X_1 + \beta_2 X_2 = 0
+$$
 
 
 where:
