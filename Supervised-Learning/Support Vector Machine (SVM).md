@@ -1,12 +1,8 @@
 # Support Vector Machine (SVM)
-In this content we will discuss about the support Vector Machine (SVM), an approch for classification that was developed in 1990s. The SVM is often considered one of the best "out of the box" classifiers. 
+In this content we will discuss about the support Vector Machine (SVM), an approch for classification that was developed in 1990s. The SVM is often considered one of the best "out of the box" classifiers. Many real-world classification problems require a decision boundary that not only separates different classes but also provides a **large margin of separation** between them.Earlier methods such as **Logistic Regression** and **Linear Discriminant Analysis (LDA)** can produce effective linear decision boundaries. However, they may not explicitly optimize the **margin between classes**, and linear models cannot directly handle cases where the classes are **not linearly separable**. SVM addresses these challenges by finding an **optimal separating hyperplane** that maximizes the margin between classes.
 
-Many real-world classification problems require a decision boundary that not only separates different classes but also provides a **large margin of separation** between them.
-
-Earlier methods such as **Logistic Regression** and **Linear Discriminant Analysis (LDA)** can produce effective linear decision boundaries. However, they may not explicitly optimize the **margin between classes**, and linear models cannot directly handle cases where the classes are **not linearly separable**. SVM addresses these challenges by finding an **optimal separating hyperplane** that maximizes the margin between classes.
-
-[!Note]
-Then Support vector Machine is a generalization of a simple and intutive classifier called *Maximal margin classifier*. It is elegent and simple but it cannot be applied to most of the dataset, since it requires classes be seperable by a linear boundary. <ins>Therefore, the *Support Vector Classifier* is introduced as a extension of *Maximal margin classsifier*. Support Vector Machine (SVM), which is further extension of the support vector classifier in order to accommodate non-linear class boundaries.</ins>
+>[!Note]
+>Then Support vector Machine is a generalization of a simple and intutive classifier called *Maximal margin classifier*. It is elegent and simple but it cannot be applied to most of the dataset, since it requires classes be seperable by a linear boundary. <ins>Therefore, the *Support Vector Classifier* is introduced as a extension of *Maximal margin classsifier*. Support Vector Machine (SVM), which is further extension of the support vector classifier in order to accommodate non-linear class boundaries.</ins>
 
 ## Maximal Margin Classifier
 
