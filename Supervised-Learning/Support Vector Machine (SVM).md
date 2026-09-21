@@ -66,21 +66,26 @@ $$
 Therefore, a hyperplane divides the (p)-dimensional feature space into two regions (half-spaces).
 
 **This property is fundamental to classification methods such as the Maximal Margin Classifier and Support Vector Machine (SVM), where the hyperplane is used to separate observations belonging to different classes.**
-## 4. Support Vector Classifier (Soft Margin)
+
+### The Maximal Margin Classifier
+Suppose the training data are perfectly linearly separable. In this case, there may be infinitely many hyperplanes that can successfully separate the two classes. For example, a separating hyperplane can often be shifted slightly or rotated while still keeping all training observations on the correct side. Therefore, simply finding a separating hyperplane is not enough. We need a principled way to choose one hyperplane from the infinitely many possible separating hyperplanes.
+
+A natural approach is to choose the separating hyperplane that is as far away as possible from the training observations.For a given separating hyperplane, we calculate the perpendicular distance from every training observation to the hyperplane. The smallest of these distances is called the margin. The Maximal Margin Hyperplane is the separating hyperplane for which this minimum distance is as large as possible.The chosen hyperplane leaves the largest possible empty region between itself and the nearest observations from either class. This provides a greater separation between the two classes compared with other possible separating hyperplanes. Once the maximal margin hyperplane has been determined, a new test observation can be classified according to which side of the hyperplane it lies on. The resulting classifier is called the Maximal Margin Classifier.
+
+**Limitation of the Maximal Margin Classifier**
+
+The Maximal Margin Classifier requires the training data to be perfectly linearly separable.However, real-world datasets often contains overlapping classes,noise,outliers, and observations that cannot be perfectly separated by a linear hyperplane. In such situations, a perfect separating hyperplane may not exist. Moreover, when the number of features (p) is large relative to the number of observations, the Maximal Margin Classifier can be susceptible to overfitting.
+These limitations motivate the development of the Support Vector Classifier, which allows some observations to violate the margin or even be misclassified in exchange for a more robust decision boundary.
+
+
+## Support Vector Classifier (Soft Margin)
 **Support Vector Machine (SVM)** is a powerful and versatile supervised machine learning algorithm primarily used for **linear and non-linear classification**, although it can also be extended to **regression** problems. The fundamental idea behind SVM is to find an optimal **hyperplane** that separates data points belonging to different classes. A **hyperplane** is a mathematical decision boundary that divides a feature space into two regions. In a two-dimensional space, the hyperplane is a **line**; in three dimensions, it is a **plane**; and in higher-dimensional spaces, it is referred to as a **hyperplane**. For a binary classification problem, SVM searches for the hyperplane that not only separates the different classes but also **maximizes the margin**, i.e., the margin is the distance between the closest support vectors of the two classes. A larger margin indicates a greater degree of confidence in the classification. The margin is a measure of how well-separated the classes are in feature space. SVMs are designed to find the hyperplane that maximizes this margin. Therefore, sometime SVM also called as **Maximun Margin Classifier**. 
 
 Therefore, we can define a Support Vector Machine as:
 
 > **A Support Vector Machine (SVM) is a supervised machine learning algorithm that classifies data by finding an optimal decision boundary (hyperplane) that maximizes the margin between different classes in an N-dimensional feature space.**
 
-The data points closest to the optimal hyperplane are called **support vectors**. These points play a critical role in determining the position and orientation of the decision boundary. <p align="center">
-  <img src="image/svm.png"
-       alt="Optimal Hyperplane, Margin and Support Vectors"
-       width="350"
-       height = "350">
-</p>
 
-**Fig. 1.** Illustration of the optimal hyperplane, margin, and support vectors in SVM.
 
 > [!TIP]
 > 💡 **SVM is sensitive to feature scales** because it determines the decision boundary by maximizing the geometric margin. If one feature has a much larger numerical range than another, it can disproportionately influence the distance calculations and consequently affect the orientation of the optimal hyperplane. Therefore, feature scaling, such as **StandardScaler**, is generally recommended before training an SVM.
