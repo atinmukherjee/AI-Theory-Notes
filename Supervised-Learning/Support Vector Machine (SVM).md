@@ -57,7 +57,6 @@ If
 
 $$
 \beta_0 + \sum_{j=0}^p \beta_j X_j > 0
-
 $$
 
 then (X) lies on one side of the hyperplane.
